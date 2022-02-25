@@ -29,3 +29,8 @@ http://michaellynn.github.io/2015/10/24/apples-bookmarkdata-exposed/
 https://mac-alias.readthedocs.io/en/latest/bookmark_fmt.html  
 https://www.sentinelone.com/blog/how-malware-persists-on-macos/  
 https://theevilbit.github.io/beyond/beyond_0003/  
+
+# Other Bookmark/LoginItems parsing tools
+https://github.com/al45tair/mac_alias
+https://github.com/strozfriedberg/plistutils
+https://github.com/objective-see/KnockKnock
