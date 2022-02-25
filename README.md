@@ -18,13 +18,14 @@ LoginItems contain a variety of intersting data such as:
 5. Localized Name
 
 LoginItems can exist per user at:
-* `/Users/<USER>/Library/Application Support/com.apple.backgroundtaskmanagementagent/backgrounditems.btm`
+* `/Users/<USER>/Library/Application Support/com.apple.backgroundtaskmanagementagent/backgrounditems.btm`  
+
 And macOS Applications can bundle LoginItems which should be registered at:
 * `/var/db/com.apple.xpc.launchd/loginitems.<UID>.plist`
 Both files are PLIST files. However, `backgrounditems.btm` is a binary PLIST file that contains macOS Bookmark data. The Bookmark data contains the LoginItem
 
 # References
-http://michaellynn.github.io/2015/10/24/apples-bookmarkdata-exposed/
-https://mac-alias.readthedocs.io/en/latest/bookmark_fmt.html
-https://www.sentinelone.com/blog/how-malware-persists-on-macos/
-https://theevilbit.github.io/beyond/beyond_0003/
+http://michaellynn.github.io/2015/10/24/apples-bookmarkdata-exposed/  
+https://mac-alias.readthedocs.io/en/latest/bookmark_fmt.html  
+https://www.sentinelone.com/blog/how-malware-persists-on-macos/  
+https://theevilbit.github.io/beyond/beyond_0003/  
