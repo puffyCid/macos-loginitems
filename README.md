@@ -31,6 +31,6 @@ https://www.sentinelone.com/blog/how-malware-persists-on-macos/
 https://theevilbit.github.io/beyond/beyond_0003/  
 
 # Other Bookmark/LoginItems parsing tools
-https://github.com/al45tair/mac_alias
-https://github.com/strozfriedberg/plistutils
-https://github.com/objective-see/KnockKnock
+https://github.com/al45tair/mac_alias  
+https://github.com/strozfriedberg/plistutils  
+https://github.com/objective-see/KnockKnock  
