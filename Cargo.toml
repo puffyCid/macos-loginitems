@@ -11,6 +11,8 @@ serde = {version="1.0.136", features = ["derive"]}
 nom = "7.1.0"
 serde_json = "1.0.79"
 log = "0.4.14"
+macos-bookmarks = {git = "https://github.com/puffyCid/macos-bookmarks"}
 
 [dev-dependencies]
 csv = "1.1.6"
+simplelog = "0.12.0"

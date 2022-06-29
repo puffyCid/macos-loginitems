@@ -39,8 +39,24 @@ fn loginitems_test() {
 }
 
 #[test]
-#[ignore]
+#[ignore = "LoginItems may vary on a live system"]
 fn loginitems_system() {
     let results = parse_loginitems_system().unwrap();
     assert!(results.len() > 0);
+}
+
+#[test]
+#[should_panic(expected = "Plist")]
+fn malformed_plist_test() {
+    let mut test_location = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    test_location.push("tests/test_data/malformed/bad_plist.btm");
+    let _ = parse_loginitems_path(&test_location.display().to_string()).unwrap();
+}
+
+#[test]
+#[should_panic(expected = "Bookmark")]
+fn malformed_bookmark_test() {
+    let mut test_location = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    test_location.push("tests/test_data/malformed/bad_bookmark.btm");
+    let _ = parse_loginitems_path(&test_location.display().to_string()).unwrap();
 }

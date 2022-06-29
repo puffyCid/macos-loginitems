@@ -1,3 +1,4 @@
+pub mod error;
 pub mod loginitems;
-pub mod loginitems_plist;
+mod loginitems_plist;
 pub mod parser;

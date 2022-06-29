@@ -1,3 +1,5 @@
+use log::LevelFilter;
+use simplelog::{Config, SimpleLogger};
 use std::env;
 use std::io::Write;
 use std::{error::Error, fs::OpenOptions};
@@ -6,6 +8,9 @@ use csv;
 use macos_loginitems::loginitems::LoginItemsResults;
 
 fn main() {
+    SimpleLogger::init(LevelFilter::Warn, Config::default())
+        .expect("Failed to initialize simple logger");
+
     println!("Starting LoginItems parser...");
 
     let args: Vec<String> = env::args().collect();
@@ -22,7 +27,11 @@ fn main() {
                     Err(error) => println!("Failed to output data: {:?}", error),
                 }
             }
-            Err(err) => println!("Failed to get loginitem data: {:?}", err),
+            Err(err) => println!(
+                "Failed to get loginitem data: {:?} {:?}",
+                err,
+                err.to_string()
+            ),
         }
     } else {
         let results = macos_loginitems::parser::parse_loginitems_system();
@@ -34,7 +43,7 @@ fn main() {
                     Err(error) => println!("Failed to output data: {:?}", error),
                 }
             }
-            Err(err) => println!("Failed to get loginitem data: {:?}", err),
+            Err(err) => println!("Failed to get loginitem data: {:?}", err.to_string()),
         }
     }
 }
@@ -68,6 +77,11 @@ fn parse_data(results: Vec<LoginItemsResults>) -> Result<(), Box<dyn Error>> {
         "Is App Bundled",
         "APP ID",
         "APP Binary",
+        "Path Created",
+        "Path Modified",
+        "Path Accessed",
+        "Path Changed",
+        "Has Executable Flag",
         "Source",
     ])?;
 
@@ -95,6 +109,11 @@ fn parse_data(results: Vec<LoginItemsResults>) -> Result<(), Box<dyn Error>> {
                 loginitem.is_bundled.to_string(),
                 loginitem.app_id.to_string(),
                 loginitem.app_binary.to_string(),
+                loginitem.created_time.to_string(),
+                loginitem.modified_time.to_string(),
+                loginitem.accessed_time.to_string(),
+                loginitem.changed_time.to_string(),
+                loginitem.has_executable_flag.to_string(),
                 result.path.to_string(),
             ])?;
         }
