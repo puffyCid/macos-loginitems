@@ -13,8 +13,8 @@ pub fn get_bookmarks(path: &str) -> Result<Vec<Vec<u8>>, plist::Error> {
             continue;
         }
         match value {
-            Value::Array(_) => {
-                let results = get_array_values(value)?;
+            Value::Array(value_array) => {
+                let results = get_array_values(value_array)?;
                 return Ok(results);
             }
             _ => {
@@ -27,57 +27,52 @@ pub fn get_bookmarks(path: &str) -> Result<Vec<Vec<u8>>, plist::Error> {
 }
 
 /// Loop through Array values and identify bookmark data (should be at least 48 bytes in size (header is 48 bytes))
-fn get_array_values(value: Value) -> Result<Vec<Vec<u8>>, plist::Error> {
+fn get_array_values(data_results: Vec<Value>) -> Result<Vec<Vec<u8>>, plist::Error> {
     let mut bookmark_data: Vec<Vec<u8>> = Vec::new();
-    let results = value.as_array();
-    match results {
-        Some(data_results) => {
-            for data in data_results {
-                match data {
-                    Value::Data(_) => {
-                        let plist_data = data.as_data();
-                        match plist_data {
-                            Some(plist_results) => bookmark_data.push(plist_results.to_vec()),
-                            None => {
-                                warn!("No PLIST data")
-                            }
-                        }
+    for data in data_results {
+        match data {
+            Value::Data(_) => {
+                let plist_data = data.as_data();
+                match plist_data {
+                    Some(plist_results) => bookmark_data.push(plist_results.to_vec()),
+                    None => {
+                        warn!("No PLIST data")
                     }
-
-                    Value::Dictionary(_) => {
-                        let dict_bookmark = data.as_dictionary();
-                        match dict_bookmark {
-                            Some(dict) => {
-                                for (_dict_key, dict_data) in dict {
-                                    match dict_data {
-                                        Value::Data(_) => {
-                                            let plist_data = dict_data.as_data();
-                                            match plist_data {
-                                                Some(plist_results) => {
-                                                    let min_bookmark_size = 48;
-                                                    if plist_results.len() < min_bookmark_size {
-                                                        continue;
-                                                    }
-                                                    bookmark_data.push(plist_results.to_vec())
-                                                }
-                                                None => {
-                                                    warn!("No PLIST data in dictionary")
-                                                }
-                                            }
-                                        }
-                                        _ => continue,
-                                    }
-                                }
-                            }
-                            None => continue,
-                        }
-                    }
-                    _ => continue,
                 }
             }
+
+            Value::Dictionary(_) => {
+                let dict_bookmark = data.as_dictionary();
+                match dict_bookmark {
+                    Some(dict) => {
+                        for (_dict_key, dict_data) in dict {
+                            match dict_data {
+                                Value::Data(_) => {
+                                    let plist_data = dict_data.as_data();
+                                    match plist_data {
+                                        Some(plist_results) => {
+                                            let min_bookmark_size = 48;
+                                            if plist_results.len() < min_bookmark_size {
+                                                continue;
+                                            }
+                                            bookmark_data.push(plist_results.to_vec())
+                                        }
+                                        None => {
+                                            warn!("No PLIST data in dictionary")
+                                        }
+                                    }
+                                }
+                                _ => continue,
+                            }
+                        }
+                    }
+                    None => continue,
+                }
+            }
+            _ => continue,
         }
-        None => return Ok(bookmark_data),
     }
+
     Ok(bookmark_data)
 }
 
@@ -110,8 +105,8 @@ mod tests {
                 continue;
             }
             match value {
-                Value::Array(_) => {
-                    results = get_array_values(value).unwrap();
+                Value::Array(value_array) => {
+                    results = get_array_values(value_array).unwrap();
                 }
                 _ => {
                     panic!("Unsupported Value type, expected array. Got: {:?}", value)

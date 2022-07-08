@@ -98,7 +98,8 @@ mod tests {
         assert_eq!(results.results[0].volume_flag, [4294967425, 4294972399, 0]);
         assert_eq!(results.results[0].volume_root, true);
         assert_eq!(results.results[0].localized_name, "Syncthing");
-        assert_eq!(results.results[0].security_extension, "64cb7eaa9a1bbccc4e1397c9f2a411ebe539cd29;00000000;00000000;0000000000000020;com.apple.app-sandbox.read-write;01;01000004;00000000000ac62a;/applications/syncthing.app\0");
+        assert_eq!(results.results[0].security_extension_rw, "64cb7eaa9a1bbccc4e1397c9f2a411ebe539cd29;00000000;00000000;0000000000000020;com.apple.app-sandbox.read-write;01;01000004;00000000000ac62a;/applications/syncthing.app\0");
+        assert_eq!(results.results[0].security_extension_ro, "");
         assert_eq!(results.results[0].target_flags, [2, 15, 0]);
         assert_eq!(results.results[0].username, String::new());
         assert_eq!(results.results[0].folder_index, 0);

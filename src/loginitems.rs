@@ -20,28 +20,30 @@ pub struct LoginItemsResults {
 
 #[derive(Debug, Serialize)]
 pub struct LoginItemsData {
-    pub path: Vec<String>,          // Path to binary to run
-    pub cnid_path: Vec<i64>,        // Path represented as Catalog Node ID
-    pub creation: f64,              // Created timestamp of binary target
-    pub volume_path: String,        // Root
-    pub volume_url: String,         // URL type
-    pub volume_name: String,        // Name of Volume
-    pub volume_uuid: String,        // Volume UUID string
-    pub volume_size: i64,           // Size of Volume
-    pub volume_creation: f64,       // Created timestamp of Volume
-    pub volume_flag: Vec<u64>,      // Volume Property flags
-    pub volume_root: bool,          // If Volume is filesystem root
-    pub localized_name: String,     // Optional localized name of target binary
-    pub security_extension: String, // Optional Security extension of target binary
-    pub target_flags: Vec<u64>,     // Resource property flags
-    pub username: String,           // Username related to bookmark
-    pub folder_index: i64,          // Folder index number
-    pub uid: i32,                   // User UID
-    pub creation_options: i32,      // Bookmark creation options
-    pub is_bundled: bool,           // Is loginitem in App
-    pub app_id: String,             // App ID
-    pub app_binary: String,         // App binary
-    pub has_executable_flag: bool,  // Can loginitem be executed
+    pub path: Vec<String>,             // Path to binary to run
+    pub cnid_path: Vec<i64>,           // Path represented as Catalog Node ID
+    pub creation: f64,                 // Created timestamp of binary target
+    pub volume_path: String,           // Root
+    pub volume_url: String,            // URL type
+    pub volume_name: String,           // Name of Volume
+    pub volume_uuid: String,           // Volume UUID string
+    pub volume_size: i64,              // Size of Volume
+    pub volume_creation: f64,          // Created timestamp of Volume
+    pub volume_flag: Vec<u64>,         // Volume Property flags
+    pub volume_root: bool,             // If Volume is filesystem root
+    pub localized_name: String,        // Optional localized name of target binary
+    pub security_extension_rw: String, // Optional Security extension of target binary
+    pub security_extension_ro: String, // Optional Security extension of target binary
+    pub target_flags: Vec<u64>,        // Resource property flags
+    pub username: String,              // Username related to bookmark
+    pub folder_index: i64,             // Folder index number
+    pub uid: i32,                      // User UID
+    pub creation_options: i32,         // Bookmark creation options
+    pub is_bundled: bool,              // Is loginitem in App
+    pub app_id: String,                // App ID
+    pub app_binary: String,            // App binary
+    pub has_executable_flag: bool,     // Can loginitem be executed
+    pub file_ref_flag: bool,
     pub created_time: i64,
     pub modified_time: i64,
     pub accessed_time: i64,
@@ -96,12 +98,14 @@ impl LoginItemsData {
                 volume_flag: bookmark.volume_flag,
                 volume_root: bookmark.volume_root,
                 localized_name: bookmark.localized_name,
-                security_extension: bookmark.security_extension,
+                security_extension_rw: bookmark.security_extension_rw,
+                security_extension_ro: bookmark.security_extension_ro,
                 target_flags: bookmark.target_flags,
                 username: bookmark.username,
                 folder_index: bookmark.folder_index,
                 uid: bookmark.uid,
                 creation_options: bookmark.creation_options,
+                file_ref_flag: bookmark.file_ref_flag,
                 is_bundled: false,
                 app_id: String::new(),
                 app_binary: String::new(),
@@ -165,7 +169,7 @@ impl LoginItemsData {
                 }
             };
 
-            let path = format!("{}", entry.path().display());
+            let path = entry.path().display().to_string();
 
             if !path.contains("loginitems") {
                 continue;
@@ -188,7 +192,8 @@ impl LoginItemsData {
                             volume_flag: Vec::new(),
                             volume_root: false,
                             localized_name: String::new(),
-                            security_extension: String::new(),
+                            security_extension_rw: String::new(),
+                            security_extension_ro: String::new(),
                             target_flags: Vec::new(),
                             username: String::new(),
                             folder_index: 0,
@@ -202,6 +207,7 @@ impl LoginItemsData {
                             accessed_time: 0,
                             changed_time: 0,
                             has_executable_flag: false,
+                            file_ref_flag: false,
                         };
 
                         if key.starts_with("version") {
@@ -304,7 +310,8 @@ mod tests {
         assert_eq!(data.results[0].volume_flag, [4294967425, 4294972399, 0]);
         assert_eq!(data.results[0].volume_root, true);
         assert_eq!(data.results[0].localized_name, "Syncthing");
-        assert_eq!(data.results[0].security_extension, "64cb7eaa9a1bbccc4e1397c9f2a411ebe539cd29;00000000;00000000;0000000000000020;com.apple.app-sandbox.read-write;01;01000004;00000000000ac62a;/applications/syncthing.app\0");
+        assert_eq!(data.results[0].security_extension_rw, "64cb7eaa9a1bbccc4e1397c9f2a411ebe539cd29;00000000;00000000;0000000000000020;com.apple.app-sandbox.read-write;01;01000004;00000000000ac62a;/applications/syncthing.app\0");
+        assert_eq!(data.results[0].security_extension_ro, "");
         assert_eq!(data.results[0].target_flags, [2, 15, 0]);
         assert_eq!(data.results[0].username, String::new());
         assert_eq!(data.results[0].folder_index, 0);
