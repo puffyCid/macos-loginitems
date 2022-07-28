@@ -36,6 +36,7 @@ fn loginitems_test() {
     assert_eq!(loginitems_data.results[0].localized_name, localized_name);
     assert_eq!(loginitems_data.results[0].security_extension_rw, extension);
     assert_eq!(loginitems_data.results[0].security_extension_ro, "");
+    assert_eq!(loginitems_data.results[0].file_ref_flag, false);
 
     assert_eq!(loginitems_data.results[0].target_flags, target_flags);
 }
@@ -88,10 +89,6 @@ fn loginitems_poisonapple() {
     assert_eq!(loginitems_data.results[0].app_id, "");
     assert_eq!(loginitems_data.results[0].has_executable_flag, true);
     assert_eq!(loginitems_data.results[0].file_ref_flag, false);
-    assert_eq!(loginitems_data.results[0].created_time, 1635803033);
-    assert_eq!(loginitems_data.results[0].modified_time, 1636326946);
-    assert_eq!(loginitems_data.results[0].accessed_time, 1636418165);
-    assert_eq!(loginitems_data.results[0].changed_time, 1652580783);
 
     assert_eq!(
         loginitems_data.results[2].path,
@@ -201,6 +198,32 @@ fn loginitems_poisonapple() {
     assert_eq!(loginitems_data.results[1].modified_time, 1645859107);
     assert_eq!(loginitems_data.results[1].accessed_time, 1645859107);
     assert_eq!(loginitems_data.results[1].changed_time, 1645859107);
+}
+
+#[test]
+fn loginitems_global() {
+    let mut test_location = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    test_location.push("tests/test_data/com.apple.LSSharedFileList.GlobalLoginItems.sfl2");
+    let loginitems_data = parse_loginitems_path(&test_location.display().to_string()).unwrap();
+    assert_eq!(loginitems_data.results.len(), 2);
+
+    assert_eq!(
+        loginitems_data.results[0].path,
+        ["Users", "android", "Downloads", "medusa.py"]
+    );
+}
+
+#[test]
+fn loginitems_ventura() {
+    let mut test_location = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    test_location.push("tests/test_data/BackgroundItems-v4.btm");
+    let loginitems_data = parse_loginitems_path(&test_location.display().to_string()).unwrap();
+    assert_eq!(loginitems_data.results.len(), 1);
+
+    assert_eq!(
+        loginitems_data.results[0].path,
+        ["Applications", "Syncthing.app"]
+    );
 }
 
 #[test]

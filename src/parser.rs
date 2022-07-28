@@ -6,6 +6,7 @@ use crate::{
     loginitems::{LoginItemsData, LoginItemsResults},
 };
 
+/// Parse default LoginItem paths on macOS system
 pub fn parse_loginitems_system() -> Result<Vec<LoginItemsResults>, LoginItemError> {
     let base_directory = "/Users/";
     let loginitems_path =
@@ -43,6 +44,16 @@ pub fn parse_loginitems_system() -> Result<Vec<LoginItemsResults>, LoginItemErro
         }
     }
 
+    let ventura_loginitems =
+        "/var/db/com.apple.backgroundtaskmanagementagent/BackgroundItems-v4.btm";
+    if Path::new(ventura_loginitems).exists() {
+        let results = LoginItemsData::parse_loginitems(ventura_loginitems);
+        match results {
+            Ok(data) => loginitems_data.push(data),
+            Err(err) => return Err(err),
+        }
+    }
+
     let mut app_loginitems = LoginItemsData::loginitem_apps_system()?;
     loginitems_data.append(&mut app_loginitems);
     if !loginitems_data.is_empty() {
@@ -52,11 +63,13 @@ pub fn parse_loginitems_system() -> Result<Vec<LoginItemsResults>, LoginItemErro
     Ok(loginitems_data)
 }
 
+/// Parse a LoginItem plist file
 pub fn parse_loginitems_path(path: &str) -> Result<LoginItemsResults, LoginItemError> {
     let results = LoginItemsData::parse_loginitems(path)?;
     Ok(results)
 }
 
+/// Parse a bundled LoginItem file
 pub fn parse_loginitems_bundled_path(path: &str) -> Result<Vec<LoginItemsResults>, LoginItemError> {
     LoginItemsData::loginitems_bundled_apps_path(path)
 }
@@ -107,10 +120,6 @@ mod tests {
         assert_eq!(results.results[0].is_bundled, false);
         assert_eq!(results.results[0].app_id, String::new());
         assert_eq!(results.results[0].app_binary, String::new());
-        assert_eq!(results.results[0].created_time, 1651730740);
-        assert_eq!(results.results[0].accessed_time, 1651730740);
-        assert_eq!(results.results[0].changed_time, 1654739886);
-        assert_eq!(results.results[0].modified_time, 1651730740);
     }
 
     #[test]

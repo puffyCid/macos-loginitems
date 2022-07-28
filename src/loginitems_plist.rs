@@ -88,7 +88,7 @@ mod tests {
         test_location.push("tests/test_data/backgrounditems_sierra.btm");
 
         let bookmarks = get_bookmarks(&test_location.display().to_string()).unwrap();
-        assert!(bookmarks.len() == 1);
+        assert_eq!(bookmarks.len(), 1);
     }
 
     #[test]
@@ -113,6 +113,6 @@ mod tests {
                 }
             }
         }
-        assert!(results.len() == 1);
+        assert_eq!(results.len(), 1);
     }
 }

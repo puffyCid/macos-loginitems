@@ -52,7 +52,7 @@ pub struct LoginItemsData {
 
 impl LoginItemsData {
     /// Parse User LoginItems from provided path
-    pub fn parse_loginitems(path: &str) -> Result<LoginItemsResults, LoginItemError> {
+    pub(crate) fn parse_loginitems(path: &str) -> Result<LoginItemsResults, LoginItemError> {
         // Parse PLIST file and get any bookmark data
         let loginitems_results = loginitems_plist::get_bookmarks(path);
 
@@ -137,7 +137,8 @@ impl LoginItemsData {
         Ok(loginitems_results)
     }
 
-    pub fn loginitems_bundled_apps_path(
+    /// Parse Loginitems associated with bundled apps
+    pub(crate) fn loginitems_bundled_apps_path(
         path: &str,
     ) -> Result<Vec<LoginItemsResults>, LoginItemError> {
         let mut loginitems_vec: Vec<LoginItemsResults> = Vec::new();
@@ -240,12 +241,12 @@ impl LoginItemsData {
     }
 
     /// Get loginitem data from embedded loginitems in Apps
-    pub fn loginitem_apps_system() -> Result<Vec<LoginItemsResults>, LoginItemError> {
+    pub(crate) fn loginitem_apps_system() -> Result<Vec<LoginItemsResults>, LoginItemError> {
         let default_path = "/var/db/com.apple.xpc.launchd/";
         LoginItemsData::loginitems_bundled_apps_path(default_path)
     }
 
-    fn timestamps(path: &str) -> Result<Metadata, std::io::Error> {
+    fn timestamps(path: &str) -> Result<Metadata, Error> {
         if !Path::exists(Path::new(path)) {
             return Err(Error::new(ErrorKind::InvalidInput, "path not found"));
         }
@@ -319,10 +320,6 @@ mod tests {
         assert_eq!(data.results[0].is_bundled, false);
         assert_eq!(data.results[0].app_id, String::new());
         assert_eq!(data.results[0].app_binary, String::new());
-        assert_eq!(data.results[0].created_time, 1651730740);
-        assert_eq!(data.results[0].accessed_time, 1651730740);
-        assert_eq!(data.results[0].changed_time, 1654739886);
-        assert_eq!(data.results[0].modified_time, 1651730740);
         assert_eq!(data.results[0].has_executable_flag, false);
     }
 
