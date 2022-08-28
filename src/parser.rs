@@ -4,6 +4,7 @@ use std::{fs::read_dir, path::Path};
 use crate::{
     error::LoginItemError,
     loginitems::{LoginItemsData, LoginItemsResults},
+    size::get_file_size,
 };
 
 /// Parse default LoginItem paths on macOS system
@@ -34,7 +35,7 @@ pub fn parse_loginitems_system() -> Result<Vec<LoginItemsResults>, LoginItemErro
         let path = format!("{}{}", entry.path().display(), loginitems_path);
         let full_path = Path::new(&path);
 
-        if full_path.is_file() {
+        if full_path.is_file() && get_file_size(&path) {
             let plist_path = full_path.display().to_string();
             let results = LoginItemsData::parse_loginitems(&plist_path);
             match results {
@@ -46,7 +47,7 @@ pub fn parse_loginitems_system() -> Result<Vec<LoginItemsResults>, LoginItemErro
 
     let ventura_loginitems =
         "/var/db/com.apple.backgroundtaskmanagementagent/BackgroundItems-v4.btm";
-    if Path::new(ventura_loginitems).exists() {
+    if Path::new(ventura_loginitems).exists() && get_file_size(ventura_loginitems) {
         let results = LoginItemsData::parse_loginitems(ventura_loginitems);
         match results {
             Ok(data) => loginitems_data.push(data),

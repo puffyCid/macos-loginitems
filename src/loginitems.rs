@@ -11,6 +11,7 @@ use serde::Serialize;
 
 use crate::error::LoginItemError;
 use crate::loginitems_plist;
+use crate::size::get_file_size;
 
 #[derive(Debug, Serialize)]
 pub struct LoginItemsResults {
@@ -172,7 +173,7 @@ impl LoginItemsData {
 
             let path = entry.path().display().to_string();
 
-            if !path.contains("loginitems") {
+            if !path.contains("loginitems") || !get_file_size(&path) {
                 continue;
             }
 
